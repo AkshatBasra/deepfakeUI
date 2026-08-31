@@ -11,6 +11,8 @@ function App() {
 
   const [dragActive, setDragActive] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     if (!loading) return undefined;
 
@@ -63,7 +65,7 @@ function App() {
     formData.append("file", video);
 
     try {
-      const res = await fetch("http://localhost:8000/predict", {
+      const res = await fetch(`${API_URL}/predict`, {
         method: "POST",
         body: formData,
       });
