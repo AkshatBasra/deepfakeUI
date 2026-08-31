@@ -65,10 +65,12 @@ function App() {
     formData.append("file", video);
 
     try {
+      console.log("Doing API Call");
       const res = await fetch(`${API_URL}/predict`, {
         method: "POST",
         body: formData,
       });
+      console.log("API Call Done");
 
       if (!res.ok) {
         const err = await res.json();
