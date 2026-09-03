@@ -115,7 +115,12 @@ function App() {
 
         try {
           const statusResponse = await fetch(
-            `${API_URL}/predict/${encodeURIComponent(jobId)}`
+            `${API_URL}/predict/${encodeURIComponent(jobId)}`,
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "true",
+              },
+            },
           );
 
           if (!statusResponse.ok) {
