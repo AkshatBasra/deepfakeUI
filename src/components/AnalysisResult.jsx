@@ -40,6 +40,11 @@ function AnalysisResult({ result }) {
   const confidence = (result.prediction === "real"
     ? 1 - result.confidence
     : result.confidence) * 100;
+  const heatmapSource = result.heatmap
+    ? result.heatmap.startsWith("data:")
+      ? result.heatmap
+      : `data:image/png;base64,${result.heatmap}`
+    : null;
 
   return (
     <div className={`result-box ${predictionClass}`}>
@@ -63,6 +68,13 @@ function AnalysisResult({ result }) {
           ></div>
         </div>
       </div>
+
+      {heatmapSource && (
+        <div className="heatmap-section">
+          <div className="heatmap-label">Heatmap</div>
+          <img className="heatmap-image" src={heatmapSource} alt="Heatmap" />
+        </div>
+      )}
     </div>
   );
 }
