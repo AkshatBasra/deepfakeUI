@@ -40,10 +40,11 @@ function AnalysisResult({ result }) {
   const confidence = (result.prediction === "real"
     ? 1 - result.confidence
     : result.confidence) * 100;
-  const heatmapSource = result.heatmap
-    ? result.heatmap.startsWith("data:")
-      ? result.heatmap
-      : `data:image/png;base64,${result.heatmap}`
+  const heatmapImage = result.heatmap?.image;
+  const heatmapSource = heatmapImage?.data
+    ? heatmapImage.data.startsWith("data:")
+      ? heatmapImage.data
+      : `data:${heatmapImage.mime_type || "image/jpeg"};base64,${heatmapImage.data}`
     : null;
 
   return (
