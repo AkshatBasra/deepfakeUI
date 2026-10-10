@@ -12,7 +12,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingPhase, setLoadingPhase] = useState("uploading");
-  const [loadingStage, setLoadingStage] = useState("progress");
+  const [loadingStage, setLoadingStage] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [error, setError] = useState("");
   const [dragActive, setDragActive] = useState(false);
@@ -22,13 +22,6 @@ function App() {
 
   const API_URL = import.meta.env.VITE_API_URL;
   const hasAnalysisPanel = loading || !!result;
-
-  useEffect(() => {
-    if (!loading) return undefined;
-
-    const timeout = setTimeout(() => setLoadingStage("almost"), 60000);
-    return () => clearTimeout(timeout);
-  }, [loading]);
 
   useEffect(() => {
     return () => {
@@ -75,7 +68,7 @@ function App() {
     if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
     setLoading(true);
     setLoadingPhase("uploading");
-    setLoadingStage("progress");
+    setLoadingStage(null);
     setResult(null);
     setError("");
 
@@ -142,6 +135,16 @@ function App() {
           const statusData = await statusResponse.json();
           if (requestIdRef.current !== requestId) return;
 
+          if (
+            !Number.isInteger(statusData.stage) ||
+            statusData.stage < 0 ||
+            statusData.stage > 9
+          ) {
+            throw new Error("The analysis service returned an invalid job stage.");
+          }
+
+          setLoadingStage(statusData.stage);
+
           if (statusData.status === "completed") {
             pollTimeoutRef.current = null;
             setResult(statusData.result);
@@ -157,7 +160,7 @@ function App() {
             throw new Error("The analysis service returned an unknown job status.");
           }
 
-          pollTimeoutRef.current = setTimeout(poll, 7000);
+          pollTimeoutRef.current = setTimeout(poll, 2000);
         } catch (err) {
           if (requestIdRef.current !== requestId) return;
           pollTimeoutRef.current = null;
@@ -166,7 +169,7 @@ function App() {
         }
       };
 
-      pollTimeoutRef.current = setTimeout(poll, 7000);
+      pollTimeoutRef.current = setTimeout(poll, 2000);
     } catch (err) {
       if (requestIdRef.current !== requestId) return;
       pollTimeoutRef.current = null;
