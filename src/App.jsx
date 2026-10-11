@@ -3,6 +3,7 @@ import "./App.css";
 import AnalysisResult from "./components/AnalysisResult";
 import BrandHeader from "./components/BrandHeader";
 import ErrorToast from "./components/ErrorToast";
+import HeatmapResult from "./components/HeatmapResult";
 import LoadingStatus from "./components/LoadingStatus";
 import VideoUploader from "./components/VideoUploader";
 import { getFriendlyErrorMessage } from "./utils/errorMessages";
@@ -160,7 +161,7 @@ function App() {
             throw new Error("The analysis service returned an unknown job status.");
           }
 
-          pollTimeoutRef.current = setTimeout(poll, 2000);
+          pollTimeoutRef.current = setTimeout(poll, 5000);
         } catch (err) {
           if (requestIdRef.current !== requestId) return;
           pollTimeoutRef.current = null;
@@ -169,7 +170,7 @@ function App() {
         }
       };
 
-      pollTimeoutRef.current = setTimeout(poll, 2000);
+      pollTimeoutRef.current = setTimeout(poll, 5000);
     } catch (err) {
       if (requestIdRef.current !== requestId) return;
       pollTimeoutRef.current = null;
@@ -232,6 +233,8 @@ function App() {
             </aside>
           )}
         </div>
+
+        {!loading && result && <HeatmapResult result={result} />}
       </div>
     </div>
   );
