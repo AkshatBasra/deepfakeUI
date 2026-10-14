@@ -22,6 +22,7 @@ function App() {
   const requestIdRef = useRef(0);
 
   const API_URL = import.meta.env.VITE_API_URL;
+  const POLL_TIME = 1000;
   const hasAnalysisPanel = loading || !!result;
 
   useEffect(() => {
@@ -161,7 +162,7 @@ function App() {
             throw new Error("The analysis service returned an unknown job status.");
           }
 
-          pollTimeoutRef.current = setTimeout(poll, 5000);
+          pollTimeoutRef.current = setTimeout(poll, POLL_TIME);
         } catch (err) {
           if (requestIdRef.current !== requestId) return;
           pollTimeoutRef.current = null;
@@ -170,7 +171,7 @@ function App() {
         }
       };
 
-      pollTimeoutRef.current = setTimeout(poll, 5000);
+      pollTimeoutRef.current = setTimeout(poll, POLL_TIME);
     } catch (err) {
       if (requestIdRef.current !== requestId) return;
       pollTimeoutRef.current = null;
